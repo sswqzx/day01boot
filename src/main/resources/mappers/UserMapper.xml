@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.day01sboot.mapper.UserMapper">
+
+    <resultMap type="User" id="userMap" autoMapping="true">
+        <id column="id" property="id"/>
+    </resultMap>
+
+
+    <sql id="commonSql">
+      id,user_name,password,name,age,sex,birthday,created,updated
+   </sql>
+
+    <select id="queryById" resultMap="userMap">
+        select <include refid="commonSql"></include> from tb_user where id = #{id}
+    </select>
+
+    <select id="findAllUsers" resultType="User">
+        select <include refid="commonSql"></include> from tb_user
+    </select>
+
+    <insert id="insertUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO tb_user (
+        user_name,
+        password,
+        name,
+        age,
+        sex,
+        birthday,
+        created,
+        updated
+        )
+        VALUES
+        (
+        #{userName},
+        #{password},
+        #{name},
+        #{age},
+        #{sex},
+        #{birthday},
+        NOW(),
+        NOW()
+        )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE tb_user set
+        user_name = #{userName},
+        password = #{password},
+        name = #{name},
+        age = #{age},
+        sex = #{sex},
+        birthday = #{birthday},
+        updated = NOW()
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="deleteUser">
+        delete from tb_user where
+        id = #{id}
+    </delete>
+
+    <!--
+             此处需要接收多个参数，有三种方式：
+            方式一：#{0}   #{1}
+            方式二：#{param1}  #{param2}
+            方式三：在接口方法的形参中加@Param注解指定名字，这里通过#{名字}来接收参数，如果只有
+                   一个参数，#{名字}可以自定义
+
+         -->
+    <select id="login" resultType="User">
+        select * from tb_user where user_name = #{userName} and password = #{password}
+    </select>
+
+</mapper>
